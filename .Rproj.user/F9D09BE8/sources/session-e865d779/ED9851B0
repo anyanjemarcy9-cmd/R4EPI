@@ -3,9 +3,9 @@
     "path": "~/R4EPI/Epi.R",
     "project_path": "Epi.R",
     "type": "r_source",
-    "hash": "0",
+    "hash": "2631205247",
     "contents": "",
-    "dirty": true,
+    "dirty": false,
     "created": 1782804666094.0,
     "source_on_save": false,
     "relative_order": 2,
@@ -16,11 +16,11 @@
         "scrollLine": "744"
     },
     "folds": "",
-    "lastKnownWriteTime": 1782392847,
+    "lastKnownWriteTime": 1782814191,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1782813507694,
+    "last_content_update": 1782814191683,
     "read_only": false,
     "read_only_alternatives": []
 }

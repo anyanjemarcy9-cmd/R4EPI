@@ -618,3 +618,141 @@ drug_trial_sub %>%
     all_se_year = n_se_year == 3) %>%
   group_by(id) %>%
   mutate(any_se=sum(any_se_year) > 0)
+library(dplyr)
+library(ggplot2)
+drug_trial_sub%>%
+  rowwise() %>%
+  mutate(
+    n_se_year = sum(se_headache,se_diarrhea,se_dry_mouth),
+    any_se_year= n_se_year > 0,
+    all_se_year= n_se_year == 3
+  ) %>%
+  mutate(any_se=sum(any_se_year) > 0)
+any_se_year<-c(TRUE, TRUE,TRUE)
+any_se_year
+sum_any_se_year <- sum(any_se_year)
+sum_any_se_year
+any_se <- sum_any_se_year > 0
+any_se
+#subsetting data frames
+set.seed(123)
+drug_trial <- tibble(
+  # Follow-up year, 0 = baseline, 1 = year one, 2 = year two.
+  year = rep(0:2, times = 20),
+  # Participant age a baseline. Must be between the ages of 35 and 75 at
+  # baseline to be eligible for the study
+  age = sample(35:75, 20, TRUE) %>% rep(each = 3),
+  # Drug the participant received, Placebo or active
+  drug = sample(c("Placebo", "Active"), 20, TRUE) %>%
+    rep(each = 3),
+  # Reported headaches side effect, Y/N
+  se_headache = if_else(
+    drug == "Placebo",
+    sample(0:1, 60, TRUE, c(.95,.05)),
+    sample(0:1, 60, TRUE, c(.10, .90))),
+  # Report diarrhea side effect, Y/N
+  se_diarrhea = if_else(
+    drug == "Placebo",
+    sample(0:1, 60, TRUE, c(.98,.02)),
+    sample(0:1, 60, TRUE, c(.20, .80))
+  ),
+  # Report dry mouth side effect, Y/N
+  se_dry_mouth = if_else(
+    drug == "Placebo",
+    sample(0:1, 60, TRUE, c(.97,.03)),
+    sample(0:1, 60, TRUE, c(.30, .70))
+  ),
+  # Participant had myocardial infarction in study year, Y/N
+  mi = if_else(
+    drug == "Placebo",
+    sample(0:1, 60, TRUE, c(.85, .15)),
+    sample(0:1, 60, TRUE, c(.80, .20))
+  )
+)
+drug_trial<-drug_trial%>%
+  mutate(
+    #Studyid,thereare20peopleenrolledinthetrial.
+    id= rep(1:20, each= 3)
+  ) %>%
+  print()
+  #select function
+drug_trial%>%
+  select(id,year, age,se_headache,se_diarrhea,se_dry_mouth,mi)
+?dplyr_tidy_select
+drug_trial<-drug_trial%>%
+  select(id,everything())%>%
+  print()
+summarise(drug_trial)
+mean(drug_trial, age)
+drug_trial<-drug_trial%>%
+  mutate(age_center= age-mean(age)) %>%
+  print()
+drug_trial <- mean(age)
+drug_trial
+list(drug_trial)
+data.frame(drug_trial)
+drug_trial%>%
+  select(age,age_center)
+drug_trial%>%
+  select(id,year, starts_with("se"))
+drug_trial%>%
+  select(id,year, se_headache:se_dry_mouth)
+#Addthe sideeffectfactorcolumnstoourdataframeagain...
+yn_levs<-c(0, 1)
+yn_labs<-c("No", "Yes")
+drug_trial %>%
+  mean(age)
+?mean
+Mean <- mean(age)
+drug_trial <- drug_trial %>%
+  mutate(
+    se_headache_f = factor(se_headache, yn_levs, yn_labs),
+    se_diarrhea_f = factor(se_diarrhea, yn_levs, yn_labs),
+    se_dry_mouth_f = factor(se_dry_mouth, yn_levs, yn_labs)
+  )
+M<- drug_trial %>%
+  summarise(mean = mean(age))
+glimpse(drug_trial)
+drug_trial %>%
+  select(id, year, ends_with("_f"))
+drug_trial %>%
+  select(1:2, 4)
+drug_trial_sub <- drug_trial %>%
+  rowwise() %>%
+  mutate(
+    n_se_year = sum(se_headache, se_diarrhea, se_dry_mouth),
+    any_se_year = n_se_year > 0,
+    all_se_year = n_se_year == 3
+  ) %>%
+  group_by(id) %>%
+  mutate(any_se = sum(any_se_year) > 0) %>%
+  ungroup() %>%
+  select(id:year,n_se_year:any_se)%>%
+  print()
+drug_trial_sub%>%
+  select(-n_se_year)
+drug_trial_sub%>%
+  select(!n_se_year)
+drug_trial_sub%>%
+  select(id:year,any_se_year:any_se)
+#The rename function
+nhanes <- tibble(
+  SEQN = c(1:4),
+  ALQ101 = c(1, 2, 1, 2),
+  ALQ110 = c(2, 2, 2, 1)
+) %>%
+  print()
+nhanes %>%
+  rename(
+    id = SEQN,
+    drinks_12_year = ALQ101,
+    drinks_12_life = ALQ110
+  )
+nhanes %>%
+  rename_with(tolower)
+#filter function
+drug_trial %>%
+  select(1:2, 4)
+drug_trial %>%
+  slice(1:5) # number of rows
+
