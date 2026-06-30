@@ -1,0 +1,8 @@
+"*" 
+"!*.R" 
+"!*.Rproj" 
+".RData" 
+".Rhistory" 
+"*.docx" 
+"*.jpg" 
+".RDataTmp*" 
