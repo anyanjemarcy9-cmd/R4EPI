@@ -1390,4 +1390,508 @@ trial_2021 <- tibble(
   outcome = 57
 ) %>%
   print()
+library(dplyr)
+trial %>%
+  bind_rows(trial_2020, trial_2021)
+#adding rows with different columns
+trial_2020 <- tibble(
+  year
+  = 2020,
+  n
+  = 500,
+  outcome = 48,
+  adv_event = 3 # Here is the new column
+) %>%
+  print()
+trial %>%
+  bind_rows(trial_2020)
+#differing column positions
+trial_2020 <- tibble(
+  year
+  = 2020,
+  n
+  = 500,
+  adv_event = 3, # This was previously the fourth column
+  outcome = 48 # This is the thrid column in trial
+) %>%
+  print()
+trial %>%
+  bind_rows(trial_2020)
+#differing column names
+trial_2020 <- tibble(
+  year
+  = 2020,
+  count
+  = 500,
+  adv_event = 3,
+  outcomes = 48
+) %>%
+  print()
+trial %>%
+  bind_rows(trial_2020)
+trial_2020_rename <- trial_2020 %>%
+  rename(
+    n = count,
+    outcome = outcomes
+  )
+trial %>%
+  bind_rows(trial_2020_rename)
+trial %>%
+  bind_rows(
+    trial_2020 %>%rename(
+      n = count,
+      outcome = outcomes
+    )
+  )
+#adding columns
+#1. by position
+df1 <- tibble(
+  color = c("red", "green", "blue"),
+  size = c("small", "medium", "large")
+) %>%
+  print()
+df2 <- tibble(
+  amount = c(1, 4, 3),
+  dose
+  = c(10, 20, 30)
+) %>%
+  print()
+df1 %>%
+  bind_cols(df2)
+#2. by key values
+demographics <- tibble(
+  id
+  = c("1001", "1002", "1003", "1004"),
+  dob
+  = as.Date(c("1968-12-14", "1952-08-03", "1949-05-27", "1955-03-12")),
+  race_eth = c(1, 2, 2, 4)
+) %>%
+  print()
+grip_strength <- tibble(
+  id
+  = c("1002", "1001", "1003", "1004"),
+  grip_r = c(32, 28, 32, 22),
+  grip_l = c(30, 30, 28, 22)
+) %>%
+  print()
+demographics %>%
+  bind_cols(grip_strength)
+demographics%>%
+  left_join(grip_strength,by= "id")
+demographics%>%
+  right_join(grip_strength,by="id")
+demographics%>%
+  full_join(grip_strength,by= "id")
+demographics%>%
+  inner_join(grip_strength,by="id")
+grip_strength%>%
+  left_join(demographics,by= "id")
+#differing rows
+demographics<-tibble(
+  id =c("1001", "1002", "1003","1004","1005"),
+  dob =as.Date(c(
+    "1968-12-14","1952-08-03","1949-05-27", "1955-03-12", "1942-06-07"
+  )),
+  race_eth =c(1,2,2,4, 3)
+)%>%
+  print()
+demographics%>%
+  left_join(grip_strength,by= "id")
+demographics%>%
+  right_join(grip_strength,by="id")
+demographics%>%
+  full_join(grip_strength,by= "id")
+demographics%>%
+  inner_join(grip_strength,by="id")
+grip_strength%>%
+  left_join(demographics,by= "id")
+#differing key column names
+grip_strength <- tibble(
+  pid
+  = c("1002", "1001", "1003", "1004"),
+  grip_r = c(32, 28, 32, 22),
+  grip_l = c(30, 30, 28, 22)
+) %>%
+  print()
+demographics %>%
+  left_join(grip_strength, by = "id")
+demographics %>%
+  left_join(grip_strength, by = c("id" = "pid"))
+#one to many relationship merge
+demographics
+grip_strength<-tibble(
+  id = rep(c("1001","1002","1003", "1004"), each= 2),
+  visit = rep(c("pre","post"),4),
+  grip_r = c(32,33,28,27,32,34, 22, 27),
+  grip_l = c(30,32,30,30,28,30, 22, 26)
+)%>%
+  print()
+demographics%>%
+  left_join(grip_strength,by= "id")
+#multiple key columns
+emr<-tibble(
+  id = rep(c("1001","1002","1003", "1004"), each= 2),
+  visit = rep(c("pre","post"),4),
+  weight = c(105,99, 200, 201,136, 133, 170,175)
+)%>%
+  print()
+demographics%>%
+  left_join(grip_strength,emr, by= "id")
+demographics%>%
+  left_join(grip_strength,by= "id") %>%
+  left_join(emr,by= "id")
+demographics%>%
+  left_join(grip_strength,by= "id") %>%
+  left_join(emr,by= c("id", "visit"))
 
+
+#32 RESTRUCTURING DATA FRAMES
+library(tidyr)
+library(ggplot2)
+#pivoting longer
+babies <- tibble(
+  id
+  = 1001:1008,
+  sex
+  = c("F", "F", "M", "F", "M", "M", "M", "F"),
+  weight_3 = c(9, 11, 17, 16, 11, 17, 16, 15),
+  weight_6 = c(13, 16, 20, 18, 15, 21, 17, 16),
+  weight_9 = c(16, 17, 23, 21, 16, 25, 19, 18),
+  weight_12 = c(17, 20, 24, 22, 18, 26, 21, 19)
+) %>%
+  print()
+babies_long<-babies %>%
+  pivot_longer(
+    cols = starts_with("weight"),
+    names_to = "months",
+    names_prefix= "weight_",
+    values_to = "weight"
+  ) %>%
+  print()
+#names_to argument
+babies %>%
+  pivot_longer(
+    cols = starts_with("weight")
+  )
+babies %>%
+  pivot_longer(
+    cols
+    = starts_with("weight"),
+    names_to = "months")
+#names_prefix argument
+babies%>%
+  pivot_longer(
+    cols = starts_with("weight"),
+    names_to = "months",
+    names_prefix= "weight_"
+  )
+babies%>%
+  pivot_longer(
+    cols = starts_with("weight"),
+    names_to = "months",
+    names_prefix= "\\w+_"
+  )
+#value_to argument
+babies %>%
+  pivot_longer(
+    cols = starts_with("weight"),
+    names_to = "months",
+    names_prefix = "weight_",
+    values_to = "weight")
+#names_transform argument
+babies%>%
+  pivot_longer(
+    cols = starts_with("weight"),
+    names_to = "months",
+    names_prefix= "weight_",
+    values_to = "weight"
+  ) %>%
+  mutate(months=as.integer(months))
+babies%>%
+  pivot_longer(
+    cols = starts_with("weight"),
+    names_to = "months",
+    names_prefix = "weight_",
+    names_transform = list(months = as.integer),
+    values_to
+    = "weight")
+#pivoting multiple sets of columns
+set.seed(123)
+babies <- tibble(
+  id = 1001:1008,
+  sex = c("F", "F", "M", "F", "M", "M", "M", "F"),
+  weight_3 = c(9, 11, 17, 16, 11, 17, 16, 15),
+  weight_6 = c(13, 16, 20, 18, 15, 21, 17, 16),
+  weight_9 = c(16, 17, 23, 21, 16, 25, 19, 18),
+  weight_12 =c(17, 20,24,22,18,26,21,19),
+  length_3 =c(17, 19,23,20,18,22,21,18),
+  length_6 =round(length_3+ rnorm(8,2,1)),
+  length_9 =round(length_6+ rnorm(8,2,1)),
+  length_12 =round(length_9+ rnorm(8,2,1)),
+)%>%
+  print()
+babies%>%
+  pivot_longer(
+    cols = c(-id,-sex),
+    names_to = c(".value","months"),
+    names_sep= "_"
+  )
+babies_long<-babies %>%
+  pivot_longer(
+    cols = starts_with("weight"),
+    names_to = "months",
+    names_prefix= "weight_",
+    values_to = "weight"
+  ) %>%
+  print()
+babies_long<-babies %>%
+  pivot_longer(
+    cols = c(-id,-sex),
+    names_to = "months",
+    names_prefix= "weight_",
+    values_to = "weight"
+  ) %>%
+  print()
+babies_long<-babies %>%
+  pivot_longer(
+    cols = c(-id,-sex),
+    names_to = "months",
+    names_prefix= c("weight_","length_"),
+    values_to = "weight"
+  ) %>%
+  print()
+babies_long<-babies %>%
+  pivot_longer(
+    cols = c(-id,-sex),
+    names_to = "months",
+    values_to= "weight"
+  ) %>%
+  print()
+babies_long<-babies %>%
+  pivot_longer(
+    cols = c(-id,-sex),
+    names_to= "months"
+  ) %>%
+  print()
+#names_sep argument
+babies_long <- babies %>%
+  pivot_longer(
+    cols
+    = c(-id,-sex),
+    names_to = "months",
+    names_sep = "_"
+  ) %>%
+  print()
+babies_long <- babies %>%
+  pivot_longer(
+    cols
+    = c(-id,-sex),
+    names_to = c("measure", "months"),
+    names_sep = "_"
+  ) %>%
+  print()
+#the .value special value
+babies_long <- babies %>%
+  pivot_longer(
+    cols
+    = c(-id,-sex),
+    names_to = c(".value", "months"),
+    names_sep = "_",
+    names_transform = list(months = as.integer)
+  ) %>%
+  print()
+babies%>%
+  pivot_longer(
+    cols = c(-id,-sex),
+    names_to = c("months",".value"),
+    names_sep= "_")
+#person period
+babies_long %>%
+  mutate(months = factor(months, c(3, 6, 9, 12))) %>%
+  ggplot() +
+  geom_point(aes(weight, length, color = months)) +
+  labs(
+    x = "Weight (Pounds)",
+    y = "Length (Inches)",
+    color = "Age (Months)"
+  ) +
+  theme_classic()
+#pivoting wider
+babies_long
+babies <- babies_long %>%
+  pivot_wider(
+    names_from = "months",
+    values_from = c("weight", "length")
+  ) %>%
+  print()
+df<-tribble(
+  ~id,~measure,~lbs_inches,
+  1, "weight", 9,
+  1, "length", 17,
+  2, "weight", 11,
+  2, "length", 19
+)%>%
+  print()
+df%>%pivot_wider(
+  names_from = "measure",
+  values_from= "lbs_inches"
+)
+#person-level
+babies %>%
+  count(sex)
+#pivot summaries
+#wide to long
+mean_weights <- babies %>%
+  summarise(
+    mean(weight_3),
+    sd(weight_3),
+    mean(weight_6),
+    sd(weight_6),
+    mean(weight_9),
+    sd(weight_9),
+    mean(weight_12),
+    sd(weight_12),
+  ) %>%
+  print()
+mean_weights %>%
+  pivot_longer(
+    cols = everything(),
+    names_to = c(".value", "measure", "months"),
+    names_pattern = "(\\w+)\\((\\w+)_(\\d+)"
+  )
+stringr::str_match("mean(weight_3)", "(\\w+)\\((\\w+)_(\\d+)")
+#long to wide
+summary_stats<-tribble(
+  ~period, ~behavior, ~value, ~n, ~n_total,~percent,
+  "SchoolYear Weekends", "Longsleeveshirt","Never", 6, 78, 8,
+  "SchoolYear Weekends", "Longsleeveshirt","Seldom", 16,78, 21,
+  "SchoolYear Weekends", "Longsleeveshirt","Sometimes", 33, 78, 42,
+  "SchoolYear Weekends", "Longsleeveshirt","Often", 17, 78, 22,
+  "SchoolYear Weekends", "Longsleeveshirt","Always", 6, 78, 8,
+  "SchoolYear Weekends", "LongPants","Never", 5, 79, 6,
+  "SchoolYear Weekends", "LongPants","Seldom", 15, 79, 19,
+  "SchoolYear Weekends", "LongPants","Sometimes", 32, 79,41,
+  "SchoolYear Weekends", "LongPants","Often", 19, 79, 24,
+  "SchoolYear Weekends", "LongPants","Always", 8,79, 10,
+  "Summer", "Longsleeveshirt","Never", 9,80,11,
+  "Summer", "Longsleeveshirt","Seldom",18,80,22,
+  "Summer", "Longsleeveshirt","Sometimes", 31, 80, 39,
+  "Summer", "Longsleeveshirt","Often", 14, 80, 18,
+  "Summer", "Longsleeveshirt","Always",8, 80, 10,
+  "Summer", "LongPants", "Never", 7, 76,9,
+  "Summer", "LongPants", "Seldom",16,76,21,
+  "Summer", "LongPants", "Sometimes",27, 76, 36,
+  "Summer", "LongPants", "Often", 18,76, 24,
+  "Summer", "LongPants", "Always",8,76, 11
+)%>%
+  print()
+summary_stats %>%
+  # Combine n and percent into a single character string
+  mutate(n_percent = paste0(n, " (", percent, ")")) %>%
+  # We no longer need n, n_total, percent
+  select(-n:-percent) %>%
+  pivot_wider(
+    names_from = "period",
+    values_from = "n_percent"
+  )
+#Tidy data
+#each value must have its column
+births_ntd <- tibble(
+  state = rep(c("CA", "FL", "TX"), each = 2),
+  outcome = rep(c("births", "neural tube defects"), 3),
+  count = c(454920, 318, 221542, 155, 378624, 265)
+) %>%
+  print()
+births_ntd %>%
+  pivot_wider(
+    names_from = "outcome",
+    values_from = "count"
+  )
+births_sex <- tibble(
+  state = c("CA", "FL", "TX"),
+  f_2018 = c(222911, 108556, 185526),
+  m_2018 = c(232009, 112986, 193098)
+) %>%
+  print()
+births_sex %>%
+  pivot_longer(
+    cols
+    =-state,
+    names_to = c("sex", "year"),
+    names_sep = "_",
+    values_to = "births"
+  )
+#each observation must have its own
+babies
+births_decade <- tibble(
+  state = c("CA", "FL", "TX"),
+  `2010` = c(409428, 199388, 340762),
+  `2020` = c(454920, 221542, 378624)
+) %>%
+  print()
+births_decade %>%
+  pivot_longer(
+    cols
+    =-state,
+    names_to = "year",
+    values_to = "births"
+  )
+#each value must have its own cell
+baby_sleep <- tibble(
+  id = c(1001, 1002, 1003),
+  sleep_range = c(".5-2", ".75-2.4", "1.1-3.8")
+) %>%
+  print()
+baby_sleep %>%
+  separate(
+    col = sleep_range,
+    into = c("min_hours", "max_hours"),
+    sep = "-",
+    convert = TRUE
+  )
+#complete function
+reports <- tibble(
+  date
+  = as.Date(c(
+    "2019-10-29", "2019-10-29", "2019-10-30", "2019-11-02", "2019-11-02"
+  )),
+  emp_id
+  = c(5123, 2224, 5153, 9876, 4030),
+  report_id = c("a8934", "af2as", "jzia3", "3293n", "dsf98")
+) %>%
+  print()
+reports %>%
+  count(date)
+reports %>%
+  count(date) %>%
+  summarise(mean_reports_per_day = mean(n))
+reports %>%
+  count(date) %>%
+  complete(
+    date = seq.Date(
+      from = as.Date("2019-10-28"),
+      to = as.Date("2019-11-03"),
+      by = "days"
+    )
+  )
+reports%>%
+  count(date) %>%
+  complete(
+    date= seq.Date(
+      from = as.Date("2019-10-28"),
+      to= as.Date("2019-11-03"),
+      by= "days"
+    ),
+    fill= list(n= 0)
+  )
+reports%>%
+  count(date) %>%
+  complete(
+    date= seq.Date(
+      from = as.Date("2019-10-28"),
+      to= as.Date("2019-11-03"),
+      by= "days"
+    ),
+    fill= list(n= 0)
+  ) %>%
+  summarise(mean_reports_per_day=mean(n))
