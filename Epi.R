@@ -1895,3 +1895,448 @@ reports%>%
     fill= list(n= 0)
   ) %>%
   summarise(mean_reports_per_day=mean(n))
+
+
+#REPEATED OPERATIONS
+#MULTIPLE METHODS FOR REPEATED OPERATIONS
+#tidy evaluation
+#writing functions
+library(dplyr)
+study<-tibble(
+  age =c(32, 30,32,29,24,38,25,24, 48, 29, 22, 29, 24, 28,24,25,
+         25, 22,25,24,25,24,23,24, 31, 24, 29, 24, 22, 23,26,23,
+         24, 25,24,33,27,25,26,26, 26, 26, 26, 27, 24, 43,25,24,
+         27, 28,29,24,26,28,25,24, 26, 24, 26, 31, 24, 26,31,34,
+         26, 25,27,NA),
+  age_group =c(2, 2, 2,1,1, 2, 1, 1,2,1, 1, 1, 1,1,1,1, 1, 1, 1,1,1,
+               1, 1, 1,2,1, 1, 1, 1,1,1, 1, 1, 1,1,2,1, 1, 1, 1,1,1,
+               1, 1, 1,2,1, 1, 1, 1,1,1, 1, 1, 1,1,1,1, 1, 2, 1,1,2,
+               2, 1, 1,1,NA),
+  gender =c(2, 1, 1,2,1, 1, 1, 2,2,2, 1, 1, 2,1,1,1, 1, 2, 2,1,1,
+            1, 1, 2,1,1, 2, 1, 1,1,2, 1, 1, 2,2,1,2, 2, 1, 2,2,1,
+            1, 1, 1,1,1, 1, 1, 2,2,1, 1, 1, 1,2,2,1, 1, 2, 1,2,1,
+            1, 1, 2,1,NA),
+  ht_in =c(70, 63,62,67,67,58,64,69, 65, 68, 63, 68, 69, 66,67,65,
+           64, 75,67,63,60,67,64,73, 62, 69, 67, 62, 68, 66,66,62,
+           64, 68,NA,68,70,68,68,66, 71, 61, 62, 64, 64, 63,67,66,
+           69, 76,NA,63,64,65,65,71, 66, 65, 65, 71, 64, 71,60,62,
+           61, 69,66,NA),
+  wt_lbs =c(216,106, 145, 195,143, 125, 138,140, 158,167,145, 297,146,
+            125,111, 125, 130,182, 170, 121,98,150, 132,250, 137, 124,
+            186,148, 134, 155,122, 142, 110,132, 188,176,188, 166,136,
+            147,178, 125, 102,140, 139, 60,147,147, 141,232, 186, 212,
+            110,110, 115, 154,140, 150, 130,NA,171, 156,92,122, 102,
+            163,141, NA),
+  bmi =c(30.99, 18.78, 26.52, 30.54,22.39,26.12,23.69,20.67,26.29,
+         25.39, 25.68, 45.15, 21.56,20.17,17.38,20.8, 22.31, 22.75,
+         26.62, 21.43, 19.14, 23.49,22.66,32.98,25.05,18.31,29.13,27.07, 20.37, 25.01, 19.69, 25.97, 18.88, 20.07, NA, 26.76,
+         26.97, 25.24, 20.68, 23.72, 24.82, 23.62, 18.65, 24.03, 23.86,
+         10.63, 23.02, 23.72, 20.82, 28.24, NA, 37.55, 18.88, 18.3,
+         19.13, 21.48, 22.59, 24.96, 21.63, NA, 29.35, 21.76, 17.97,
+         22.31, 19.27, 24.07, 22.76, NA),
+  bmi_3cat = c(3, 1, 2, 3, 1, 2, 1, 1, 2, 2, 2, 3, 1, 1, 1, 1, 1, 1, 2, 1, 1,
+               1, 1, 3, 2, 1, 2, 2, 1, 2, 1, 2, 1, 1, NA, 2, 2, 2, 1, 1, 1, 1,
+               1, 1, 1, 1, 1, 1, 1, 2, NA, 3, 1, 1, 1, 1, 1, 1, 1, NA, 2, 1,
+               1, 1, 1, 1, 1, NA)
+) %>%
+  mutate(
+    age_group = factor(age_group, labels = c("Younger than 30", "30 and Older")),
+    gender
+    = factor(gender, labels = c("Female", "Male")),
+    bmi_3cat = factor(bmi_3cat, labels = c("Normal", "Overweight", "Obese"))
+  ) %>%
+  print()
+study %>%
+  summarise(
+    n_miss = sum(is.na(age)),
+    mean = mean(age, na.rm = TRUE),
+    median = median(age, na.rm = TRUE),min = min(age, na.rm = TRUE),
+max = max(age, na.rm = TRUE))
+study %>%
+  summarise(
+    n_miss = sum(is.na(ht_in)),
+    mean = mean(ht_in, na.rm = TRUE),
+    median = median(ht_in, na.rm = TRUE),
+    min = min(ht_in, na.rm = TRUE),
+    max = max(ht_in, na.rm = TRUE))
+study %>%
+summarise(
+  n_miss = sum(is.na(wt_lbs)),
+  mean = mean(wt_lbs, na.rm = TRUE),
+  median = median(wt_lbs, na.rm = TRUE),
+  min = min(ht_in, na.rm = TRUE),
+max = max(wt_lbs, na.rm = TRUE))
+study %>%
+  summarise(
+    n_miss = sum(is.na(bmi)),
+    mean = mean(bmi, na.rm = TRUE),
+    median = median(bmi, na.rm = TRUE),
+    min = min(bmi, na.rm = TRUE),
+    max = max(bmi, na.rm = TRUE))
+continuous_stats <- function(var) {
+  study %>%
+    summarise(
+      n_miss = sum(is.na({{ var }})),
+      mean = mean({{ var }}, na.rm = TRUE),
+      median = median({{ var }}, na.rm = TRUE),
+      min = min({{ var }}, na.rm = TRUE),
+      max = max({{ var }}, na.rm = TRUE))
+}
+rlang::last_trace()
+continuous_stats(age)
+continuous_stats <- function(var) {
+  study %>%
+    summarise(
+      n_miss = sum(is.na({{ var }})),
+      mean = mean({{ var }}, na.rm = TRUE),
+      median = median({{ var }}, na.rm = TRUE),
+      min = min({{ var }}, na.rm = TRUE),
+      max = max({{ var }}, na.rm = TRUE)
+    )
+}
+continuous_stats(ht_in)
+continuous_stats(wt_lbs)
+continuous_stats(bmi)
+function()
+  people_1 <- tribble(
+    ~id_1, ~name_first_1, ~name_last_1, ~street_1,
+    1, "Easton", NA, "Alameda",
+    2, "Elias", "Salazar", "Crissy Field",
+    3, "Colton", "Fox", "San Bruno",
+    4, "Cameron", "Warren", "Nottingham",
+    5, "Carson", "Mills", "Jersey",
+    6, "Addison", "Meyer", "Tingley",
+    7, "Aubrey", "Rice", "Buena Vista",
+    8, "Ellie", "Schmidt", "Division",
+    9, "Robert", "Garza", "Red Rock",
+    10, "Stella", "Daniels", "Holland") %>%
+  print()
+people_2 <- tribble(
+  ~id_1, ~name_first_1, ~name_last_1, ~street_1,
+  1, "Easton", "Stone", "Alameda",
+  2, "Elias", "Salazar", "Crissy Field",
+  3, NA, "Fox", NA,
+  4, "Cameron", "Warren", "Nottingham",
+  5, "Carson", "Mills", "Jersey",
+  6, "Addison", NA, NA,
+  7, "Aubrey", "Rice", "Buena Vista",
+  8, NA, "Schmidt", "Division",
+  9, "Robert", "Garza", "Red Rock",
+  10, "Stella", NA, "Holland") %>%
+  print()
+people<-people_1 %>%
+  bind_cols(people_2)%>%
+  print()
+people%>%
+  mutate(
+    name_first_match = name_first_1 == name_first_2,
+    name_last_match = name_last_1 == name_last_2,
+    street_match = street_1 == street_2
+  ) %>% select(id_1, starts_with("name_f"), starts_with("name_l"), starts_with("s"))
+names(people)
+names(people) <- c(
+  "id_1",
+  "name_first_1",
+  "name_last_1",
+  "street_1",
+  "id_2",
+  "name_first_2",
+  "name_last_2",
+  "street_2"
+)
+people %>%
+  mutate(
+    name_first_match = name_first_1 == name_first_2,
+    name_last_match = name_last_1 == name_last_2,
+    street_match = street_1 == street_2
+  ) %>%
+  select(id_1, starts_with("name_f"), starts_with("name_l"), starts_with("s"))
+#spotting aneed for a function
+1 == 1
+1 == 2
+1 == NA
+NA == 2
+#MAKING THE CODE WORK FOR ONE SPECIFICCASE
+"Colton" == NA
+result <- "Colton" == NA
+result
+result <- "Colton" == NA
+result <- if_else(is.na(result), FALSE, result)
+result
+#making the solution into a function
+is_match <- function() {}
+is_match <- function() {
+  result <- "Colton" == NA
+  result <- if_else(is.na(result), FALSE, result)
+  result
+  }
+is_match()
+result <- "Colton" == NA
+result <- if_else(is.na(result), FALSE, result)
+result
+result <- "Colton" == NA
+result <- if_else(is.na(result), FALSE, result)
+result
+is_match()
+is_match(name = "Easton")
+is_match <- function(name) {
+  result <- "Colton" == NA
+  result <- if_else(is.na(result), FALSE, result)
+  result
+}
+is_match <- function(name_1, name_2) {
+  result <- "Colton" == NA
+  result <- if_else(is.na(result), FALSE, result)
+  result
+}
+#start generalising the function
+is_match <- function(first_name) {
+  result <- first_name == NA
+  result <- if_else(is.na(result), FALSE, result)
+  result
+}
+is_match(first_name = "Easton")
+result <- "Easton" == NA
+result <- if_else(is.na(result), FALSE, result)
+result
+is_match <- function(first_name, first_name) {
+  result <- first_name == first_name
+  result <- if_else(is.na(result), FALSE, result)
+  result
+}
+is_match <- function(first_name_1, first_name_2) {
+  result <- first_name_1 == first_name_2
+  result <- if_else(is.na(result), FALSE, result)
+  result
+}
+is_match(first_name_1 = "Easton", first_name_2 = "Easton")
+is_match(first_name_1 = "Easton", first_name_2 = NA)
+is_match <- function(value_1, value_2) {
+  result <- value_1 == value_2 # Don't forget to change the variable names here!!
+  result <- if_else(is.na(result), FALSE, result)
+  result
+}
+people %>%
+  mutate(
+    name_first_match = is_match(name_first_1, name_first_2),
+    name_last_match = is_match(name_last_1, name_last_2),
+    street_match
+    = is_match(street_1, street_2)
+  ) %>%
+  # Order like columns next to each other for easier comparison
+  select(id_1, starts_with("name_f"), starts_with("name_l"), starts_with("s"))
+#giving your function default values
+increment <- function(x) {
+  x + 1
+}
+increment(2)
+increment <- function(x, by) {
+  x + by
+}
+increment(2, 2)
+increment(2)
+increment <- function(x, by = 1) {
+  x + by
+}
+increment(2)
+increment(2, 1)
+increment(2, 2)
+increment(c(1, 2, 3), 2)
+#the values your functions return
+is_match <- function(value_1, value_2) {
+  result <- value_1 == value_2
+  # Do this first
+  result <- if_else(is.na(result), FALSE, result) # Then this
+  result
+}
+is_match <- function(value_1, value_2) {
+  result <- value_1 == value_2
+  result <- if_else(is.na(result), FALSE, result)
+}
+is_match("Easton", "Easton")
+sum(1, 1)
+x <- sum(1, 1)
+x <- is_match("Easton", "Easton")
+x
+increment <- function(x, by = 1) {
+  x + by 
+}
+increment <- function(x, by = 1) {
+  out <- x + by # Now we assign the value to an object
+  out
+}
+increment(2)
+increment <- function(x, by = 1) {
+  out <- x + by
+  return(out)
+}
+increment(2)
+increment <- function(x, by = 1) {
+  out <- x + by
+  out <- out + 1 # Adding an extra 1
+  return(out)
+}
+increment(2)
+increment <- function(x, by = 1) {
+  out <- x + by
+  return(out)
+# Return in the second line above adding an extra 1
+out <- out + 1
+}
+increment(2)
+increment <- function(x, by = 1) {
+  out <- x + by
+  print(out)
+}
+increment(2)
+increment <- function(x, by = 1) {
+  out <- x + by
+  print(out)
+}
+x <- increment(2)
+x
+#lexical scoping and functions
+increment <- function(x, by = 1) {
+  out <- x + by # Assign the value to the out object inside the function
+  out
+}
+x <- increment(2)
+x
+out
+add <- function(x) {
+  x + y
+}
+add(2)
+y <- 100
+add(2)
+add <- function(x) {
+  y <- 1
+  x + y
+}
+y <- 100
+add(2)
+add <- function(x, y) {
+  x + y
+}
+y <- 100
+add(2)
+#Tidy evaluation
+study
+study%>%
+  count(age_group) %>%
+  mutate(percent = n/ sum(n)*100)
+cat_stats<-function(var){
+  study %>%
+    count(age_group)%>%
+    mutate(percent= n /sum(n)* 100)
+}
+cat_stats()
+cat_stats<-function(var){
+  study %>%
+    count(var) %>%
+    mutate(percent= n /sum(n)* 100)
+}
+cat_stats(age_group)
+cat_stats <- function(var) {
+  study %>%
+    count({{ var }}) %>%
+    mutate(percent = n / sum(n) * 100)
+}
+cat_stats(age_group)
+cat_stats(gender)
+cat_stats(bmi_3cat)
+other_study <- tibble(
+  id = 1:10,
+  age_group = c(rep("Younger", 9), "Older"),
+) %>%
+  print()
+cat_stats(age_group)
+cat_stats <- function(var) {
+  study %>%
+    count({{ var }}) %>%
+    mutate(percent = n / sum(n) * 100)
+}
+cat_stats <- function(data, var) {
+  study %>%
+    count({{ var }}) %>%
+    mutate(percent = n / sum(n) * 100)
+}
+cat_stats <- function(data, var) {
+  data %>%
+    count({{ var }}) %>%
+    mutate(percent = n / sum(n) * 100)
+}
+cat_stats(other_study, age_group)
+other_study %>%
+  cat_stats(age_group)
+age_group
+other_study$age_group
+other_study
+cat_stats<-function(data,var){
+  {{data}} %>%
+    count({{ var }})%>%
+    mutate(percent= n /sum(n)* 100)
+}
+cat_stats(other_study,age_group)
+
+
+#COLUMN WISE OPERATIONS IN dplyr
+library(dplyr, warn.conflicts = FALSE)
+set.seed(123)
+df_xyz <- tibble(
+  row = 1:10,
+  x = rnorm(10),
+  y = rnorm(10),
+  z = rnorm(10)
+) %>%
+  print()
+df_xyz %>%
+  summarise(
+    x_mean = mean(x),
+    y_mean = mean(y),
+    z_mean = mean(y))
+df_xyz %>%
+  summarise(
+    across(
+      .cols = c(x:z),
+      .fns
+      = mean,
+      .names = "{col}_mean"))
+#The across function
+df_xyz$x[2] <- NA_real_
+df_xyz$y[4] <- NA_real_
+df_xyz$z[6] <- NA_real_
+df_xyz
+df_xyz %>%
+  summarise(
+    x_mean = mean(x),
+    y_mean = mean(y),
+    z_mean = mean(y)
+  )
+df_xyz %>%
+  summarise(
+    x_mean = mean(x, na.rm = TRUE),
+    y_mean = mean(y, na.rm = TRUE),
+    z_mean = mean(z, na.rm = TRUE))
+df_xyz %>%
+  summarise(
+    across(
+      .cols = everything(),
+      .fns = mean,
+na.rm = TRUE, # Passing na.rm = TRUE to the ... argument
+.names = "{col}_mean"))
+df_xyz %>%
+  summarise(
+    across(
+      .cols = everything(),
+      .fns
+      = mean,
+      na.rm = TRUE))
+df_xyz %>%
+  summarise(
+    across(
+      .cols = everything(),
+      .fns
+      = mean,
+      na.rm = TRUE,
+      .names = "{col}_{fn}"))
