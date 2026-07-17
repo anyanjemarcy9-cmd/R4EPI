@@ -2340,3 +2340,250 @@ df_xyz %>%
       = mean,
       na.rm = TRUE,
       .names = "{col}_{fn}"))
+library(dplyr)
+df_xyz %>%
+  summarise(
+    across(
+      .cols = everything(),
+      .fns
+      = mean,
+      na.rm = TRUE))
+df_xyz %>%
+  summarise(
+    across(
+      .cols = everything(),
+      .fns
+      = mean,
+      na.rm = TRUE,
+      .names = "{col}_{fn}"))
+df_xyz %>%
+  summarise(
+    across(
+      .cols = everything(),
+      .fns
+      = list(mean = mean),
+      na.rm = TRUE,
+      .names = "{col}_{fn}"))
+df_xyz %>%
+  summarise(
+    across(
+      .cols = everything(),
+      .fns
+      = list(r4epi = mean),
+      na.rm = TRUE,
+      .names = "{col}_{fn}"))
+df_xyz %>%
+  summarise(
+    across(
+      .cols = everything(),
+      .fns
+      = list(mean = r4epi),
+      na.rm = TRUE,
+      .names = "{col}_{fn}"))
+df_xyz %>%
+  summarise(
+    x_min = min(x, na.rm = TRUE),
+    x_max = max(x, na.rm = TRUE),
+    y_min = min(y, na.rm = TRUE),
+    y_max = max(y, na.rm = TRUE),
+    z_min = min(z, na.rm = TRUE),
+    z_max = max(z, na.rm = TRUE))
+df_xyz %>%
+  summarise(
+    across(
+      .cols = everything(),
+      .fns
+      = list(min = min, max = max),
+      na.rm = TRUE,
+      .names = "{col}_{fn}"))
+df_xyz %>%
+  summarise(
+    across(
+      .cols = everything(),
+      .fns
+      = ~ mean(.x, na.rm = TRUE),
+      .names = "{col}_mean"))
+#Across with mutate
+set.seed(123)
+demographics <- tibble(
+  id
+  = 1:10,
+  age = c(sample(1:30, 9, TRUE), NA),
+  race = c(1, 2, 1, 4, 7, 1, 2, 9, 1, 3),
+  hispanic = c(7, 0, 1, 0, 1, 0, 1, 9, 0, 1),
+  edu_4cat = c(4, 2, 9, 1, 2, 3, 4, 9, 3, 3),
+  inc_6cat =c(1,4,1,1, 5, 3,2,2,7, 9)
+)%>%
+  print()
+demographics%>%
+  mutate(
+    race = if_else(race== 7| race== 9, NA_real_,race),
+    hispanic= if_else(race== 7| hispanic== 9,NA_real_,hispanic),
+    edu_4cat= if_else(edu_4cat== 7 |edu_4cat ==9,NA_real_,edu_4cat))
+demographics%>%
+  mutate(
+    across(
+      .cols =c(-id,-age),
+      .fns =~ if_else(.x== 7| .x ==9,NA_real_,.x)))
+set.seed(123)
+drug_trial<-tibble(
+  id =1:10,
+  se_headache =sample(0:1,10,TRUE),
+  se_diarrhea =sample(0:1,10,TRUE),
+  se_dry_mouth =sample(0:1,10,TRUE),
+  se_nausea =sample(0:1,10,TRUE)
+)%>%
+  print()
+drug_trial%>%
+  mutate(
+    se_headache_f = factor(se_headache, 0:1, c("No","Yes")),
+    se_diarrhea_f = factor(se_diarrhea, 0:1, c("No","Yes")),
+    se_dry_mouth_f= factor(se_dry_mouth,0:1,c("No","Yes")))
+drug_trial%>%
+  mutate(
+    across(
+      .cols = starts_with("se"),
+      .fns = ~factor(.x,0:1,c("No", "Yes")),
+      .names= "{col}_f"))
+#across with summarise
+library(readr)
+library(stringr)
+library(here)
+ehr <- read_rds("ehr.Rds")
+symptoms <- ehr %>%
+  select(symptoms) %>%
+  print()
+symptoms <- symptoms %>%
+  mutate(
+    pain
+    = str_detect(symptoms, "Pain"),
+    headache = str_detect(symptoms, "Headache"),
+    nausea = str_detect(symptoms, "Nausea")
+  ) %>%
+  print()
+table(symptoms$headache)
+table(symptoms$pain)
+table(symptoms$nausea)
+symptoms %>%
+  summarise(
+    had_headache = sum(headache, na.rm = TRUE),
+    had_pain
+    = sum(pain, na.rm = TRUE),
+    had_nausea = sum(nausea, na.rm = TRUE))
+symptoms %>%
+  summarise(
+    across(
+      .cols = c(headache, pain, nausea),
+      .fns
+      = ~ sum(.x, na.rm = TRUE)))
+symptoms %>%
+  summarise(
+    had_headache = mean(headache, na.rm = TRUE),
+    had_pain
+    = mean(pain, na.rm = TRUE),
+    had_nausea = mean(nausea, na.rm = TRUE))
+symptoms %>%
+  summarise(
+    across(
+      .cols = c(pain, headache, nausea),
+      .fns = ~ mean(.x, na.rm = TRUE)))
+symptom_summary <- symptoms %>%
+  summarise(
+    across(
+      .cols = c(pain, headache, nausea),
+      .fns = list(
+        count = ~ sum(.x, na.rm = TRUE),
+        prop = ~ mean(.x, na.rm = TRUE))))%>%
+  print()
+symptom_summary %>%
+  tidyr::pivot_longer(
+    cols
+    = everything(),
+    names_to = c("symptom", ".value"),
+    names_sep = "_")
+study<-tibble(
+  age =c(32, 30,32,29,24,38,25,24, 48, 29, 22, 29, 24, 28,24,25,
+         25, 22,25,24,25,24,23,24, 31, 24, 29, 24, 22, 23,26,23,
+         24, 25,24,33,27,25,26,26, 26, 26, 26, 27, 24, 43,25,24,
+         27, 28,29,24,26,28,25,24, 26, 24, 26, 31, 24, 26,31,34,
+         26, 25,27,NA),
+  age_group =c(2, 2, 2,1,1, 2, 1, 1,2,1, 1, 1, 1,1,1,1, 1, 1, 1,1,1,
+               1, 1, 1,2,1, 1, 1, 1,1,1, 1, 1, 1,1,2,1, 1, 1, 1,1,1,
+               1, 1, 1,2,1, 1, 1, 1,1,1, 1, 1, 1,1,1,1, 1, 2, 1,1,2,
+               2, 1, 1,1,NA),
+  gender =c(2, 1, 1,2,1, 1, 1, 2,2,2, 1, 1, 2,1,1,1, 1, 2, 2,1,1,
+            1, 1, 2,1,1, 2, 1, 1,1,2, 1, 1, 2,2,1,2, 2, 1, 2,2,1,
+            1, 1, 1,1,1, 1, 1, 2,2,1, 1, 1, 1,2,2,1, 1, 2, 1,2,1,
+            1, 1, 2,1,NA),
+  ht_in =c(70, 63,62,67,67,58,64,69, 65, 68, 63, 68, 69, 66,67,65,
+           64, 75,67,63,60,67,64,73, 62, 69, 67, 62, 68, 66,66,62,
+           64, 68,NA,68,70,68,68,66, 71, 61, 62, 64, 64, 63,67,66,
+           69, 76,NA,63,64,65,65,71, 66, 65, 65, 71, 64, 71,60,62,
+           61, 69,66,NA),
+  wt_lbs =c(216,106, 145, 195,143, 125, 138,140, 158,167,145, 297,146,
+            125,111, 125, 130,182, 170, 121,98,150, 132,250, 137, 124,
+            186,148, 134, 155,122, 142, 110,132, 188,176,188, 166,136,
+            147,178, 125, 102,140, 139, 60,147,147, 141,232, 186, 212,
+            110,110, 115, 154,140, 150, 130,NA,171, 156,92,122, 102,
+            163,141, NA),
+  bmi =c(30.99, 18.78, 26.52, 30.54,22.39,26.12,23.69,20.67,26.29,
+         25.39, 25.68, 45.15, 21.56,20.17,17.38,20.8, 22.31, 22.75,
+         26.62, 21.43, 19.14, 23.49,22.66,32.98,25.05,18.31,29.13,
+         27.07, 20.37, 25.01, 19.69,25.97,18.88,20.07,NA,26.76,
+         26.97, 25.24, 20.68, 23.72,24.82,23.62,18.65,24.03,23.86,
+         10.63, 23.02, 23.72, 20.82,28.24,NA,37.55,18.88,18.3,
+         19.13, 21.48, 22.59, 24.96,21.63,NA,29.35,21.76,17.97,
+         22.31, 19.27, 24.07, 22.76,NA),
+  bmi_3cat =c(3, 1, 2,3,1, 2, 1, 1,2,2, 2, 3, 1,1,1,1, 1, 1, 2,1,1,
+              1, 1, 3,2,1, 2, 2, 1,2,1, 2, 1, 1,NA, 2,2,2, 1, 1, 1,1,
+              1, 1, 1,1,1, 1, 1, 2,NA,3,1,1, 1, 1, 1,1,1, NA,2, 1,
+              1, 1, 1,1,1, NA))%>%mutate(
+                age_group = factor(age_group, labels = c("Younger than 30", "30 and Older")),
+                gender
+                = factor(gender, labels = c("Female", "Male")),
+                bmi_3cat = factor(bmi_3cat, labels = c("Normal", "Overweight", "Obese"))
+              ) %>%
+  print()
+continuous_stats <- function(var) {
+  study %>%
+    summarise(
+      n_miss = sum(is.na({{ var }})),
+      mean = mean({{ var }}, na.rm = TRUE),
+      median = median({{ var }}, na.rm = TRUE),
+      min = min({{ var }}, na.rm = TRUE),
+max = max({{ var }}, na.rm = TRUE))
+}
+continuous_stats(age)
+continuous_stats(ht_in)
+continuous_stats(wt_lbs)
+continuous_stats(bmi)
+summary_stats <- study %>%
+  summarise(
+    across(
+      .cols = c(age, ht_in, wt_lbs, bmi),
+      .fns = list(
+        n_miss = ~ sum(is.na(.x)),
+        mean = ~ mean(.x, na.rm = TRUE),
+        median = ~ median(.x, na.rm = TRUE),
+        min = ~ min(.x, na.rm = TRUE),
+        max = ~ max(.x,na.rm= TRUE))))%>%
+  print()
+summary_stats%>%
+  tidyr::pivot_longer(
+    cols = everything(),
+    names_to = c("characteristic",".value"),
+    names_sep= "_")        
+summary_stats <- study %>%
+  summarise(
+    across(
+      .cols = c(age, ht_in, wt_lbs, bmi),
+      .fns
+      = list(
+        n_miss = ~ sum(is.na(.x)),
+        mean = ~ mean(.x, na.rm = TRUE),
+        median = ~ median(.x, na.rm = TRUE),
+        min = ~ min(.x, na.rm = TRUE),
+        max = ~ max(.x, na.rm = TRUE)),
+      .names = "{col}-{fn}" # This is the new part of the code
+    ))%>%
+  print()
