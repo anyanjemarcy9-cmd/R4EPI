@@ -2587,3 +2587,438 @@ summary_stats <- study %>%
       .names = "{col}-{fn}" # This is the new part of the code
     ))%>%
   print()
+library(dplyr)
+summary_stats %>%
+  tidyr::pivot_longer(
+    cols = everything(),
+    names_to = c("characteristic", ".value"),
+    names_sep = "-")
+#Across with filter
+df_xyz %>%
+  filter(!is.na(x))
+df_xyz%>%
+  filter(!is.na(x))%>%
+  summarise(mean= mean(x))
+df_xyz%>%
+  filter(!is.na(x))%>%
+  filter(!is.na(y))%>%
+  filter(!is.na(z))
+df_xyz %>%
+  filter(
+    if_all(
+      .cols = c(x:z),
+      .fns = ~ !is.na(.x)))
+is.na(df_xyz$x)
+!is.na(df_xyz$x)
+df_xyz %>%
+  filter(c(TRUE, FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE))
+!is.na(df_xyz$y)
+!is.na(df_xyz$z)
+not_missing <- tibble(
+  row = 1:10,
+  x = !is.na(df_xyz$x),
+  y = !is.na(df_xyz$y),
+  z = !is.na(df_xyz$z)
+) %>%
+  print()
+df_xyz %>%
+  filter(
+    if_any(
+      .cols = c(x:z),
+      .fns = ~ !is.na(.x)))
+df_xyz %>%
+  filter(
+    if_all(
+      .cols = c(x:z),
+      .fns = ~ !is.na(.x)))
+
+
+#WRITING FOR LOOPS
+set.seed(123)
+df_xyz <- tibble(
+  x = rnorm(10),
+  y = rnorm(10),
+  z = rnorm(10)
+) %>%
+  print()
+df_xyz %>%
+  summarise(
+    x_mean = mean(x),
+    y_mean = mean(y),
+    z_mean = mean(y))
+df_xyz %>%
+  summarise(
+    across(
+      .cols = everything(),
+      .fns
+      = mean,
+      .names = "{col}_mean"))
+xyz_means <- vector("double", ncol(df_xyz))
+for(i in seq_along(df_xyz)) {
+  xyz_means[[i]] <- mean(df_xyz[[i]])}
+mean(df_xyz$x)
+mean(df_xyz$y)
+mean(df_xyz$z)
+mean(df_xyz[["x"]])
+mean(df_xyz[["y"]])
+mean(df_xyz[["z"]])
+mean(df_xyz[[1]])
+mean(df_xyz[[2]])
+mean(df_xyz[[3]])
+#the for function
+for(in 1) {
+  print(i)
+  }
+for(i 1) {
+  print(i)}
+for(i in 1) {
+  print(i)
+  }
+for(i in c(1, 2, 3)) {
+  print(i)
+}
+for(x in c(1, 2, 3)) {
+  print(x)
+}
+for(number in c(1, 2, 3)) {
+  print(number)
+}
+for(i in df_xyz) {
+  print(i)
+}
+for(i in df_xyz) {
+  mean(i)
+}
+for(i in df_xyz) {
+  print(mean(i))
+}
+xyz_means <- df_xyz %>%
+  summarise(
+    across(
+      .cols = everything(),
+      .fns
+      = mean,
+      .names = "{col}_mean"))
+xyz_means
+xyz_means <- for(i in df_xyz) {
+  mean(i)
+}
+xyz_means
+my_vec <- vector()
+my_vec
+xyz_means <- vector("numeric", 3)
+xyz_means
+for(i in df_xyz) {
+  xyz_means <- mean(i)
+}
+xyz_means
+my_vec <- c(1, 2, 3)
+my_vec
+my_vec <--0.4245589
+xyz_means <- vector("numeric", 3)
+xyz_means
+xyz_means[[1]] <- 0.07462564
+xyz_means[[2]] <- 0.208622
+xyz_means[[3]] <--0.4245589
+xyz_means
+mean(df_xyz[[1]])
+mean(df_xyz[[2]])
+mean(df_xyz[[3]])
+for(i in c(1, 2, 3)) {
+  print(i)
+}
+xyz_means <- vector("numeric", 3)
+xyz_means
+for(i in c(1, 2, 3)) {
+  xyz_means[[i]] <- mean(df_xyz[[i]])
+}
+xyz_means
+seq_along(c(4, 5, 6))
+seq_along(c("a", "b", "c", "d"))
+seq_along(df_xyz)
+xyz_means <- vector("numeric", 3)
+for(i in seq_along(df_xyz)) {
+  xyz_means[[i]] <- mean(df_xyz[[i]])
+}
+xyz_means
+df_xyz <- df_xyz %>%
+  mutate(a = rnorm(10)) %>%
+  print()
+xyz_means<-vector("numeric", length(df_xyz))
+for(i in seq_along(df_xyz)){ #Usingseq_along()insteadofc(1,2,3)
+  xyz_means[[i]]<-mean(df_xyz[[i]])
+}
+xyz_means
+multi_means<-function(data){
+  #Create astructuretocontainresults
+  result <-vector("numeric", length(data))
+  #Iterate overeach columnofdata
+  for(i in seq_along(data)){
+    result[[i]]<-mean(data[[i]])
+  }
+  # Return the result
+  result
+}
+multi_means(df_xyz)
+set.seed(123)
+new_df <- tibble(
+  age = rnorm(10, 50, 10),
+  height = rnorm(10, 65, 5),
+  weight = rnorm(10, 165, 10)
+) %>%
+  print()
+multi_means(new_df)
+xyz_means <- vector("numeric", length(df_xyz))
+for(i in seq_along(df_xyz)) {
+  xyz_means[[i]] <- mean(df_xyz[[i]])
+  names(xyz_means)[[i]] <- paste0(names(df_xyz)[[i]], "_mean")
+}
+xyz_means
+xyz_means %>%
+  as.list() %>%
+  as_tibble()
+multi_means <- function(data) {
+  # Create a structure to contain results
+  result <- vector("numeric", length(data))
+  # Iterate over each column of data
+  for(i in seq_along(data)) {
+    result[[i]] <- mean(data[[i]])
+    names(result)[[i]] <- paste0(names(data)[[i]], "_mean")
+  }
+  # Return the result as a tibble
+  as_tibble(as.list(result))
+}
+multi_means(new_df)
+#using for loops for data transfer
+library(readxl)
+houston <- read_excel(
+  "city_ses.xlsx",
+  sheet = "Houston")%>%
+  print()
+atlanta <- city_ses %>%
+  sheet = "Atlanta"%>%
+  print()
+city_ses
+ls()
+class(city_ses)
+library(readxl)
+atlanta <- read_excel(
+  "C:/Users/Immah/Downloads/city_ses.xlsx",
+  sheet = "Atlanta"
+)
+library(readxl)
+Houston<- read_excel(
+  "C:/Users/Immah/Downloads/city_ses.xlsx",
+  sheet = "Houston"
+)
+library(readxl)
+
+Charlotte<- read_excel(
+  "C:/Users/Immah/Downloads/city_ses.xlsx",
+  sheet = "Charlotte"
+)
+import_cities<-function(sheet){
+  df <-read_excel(
+    "city_ses.xlsx",
+    sheet= sheet)
+}
+houston<-import_cities("Houston")%>%print()
+import_cities <- function(city) {
+  read_excel(
+    "C:/Users/Immah/Downloads/city_ses.xlsx",
+    sheet = city
+  )
+}
+houston <- import_cities("Houston") %>% print()
+atlanta<-import_cities("Atlanta")%>%print()
+charlotte <- import_cities("Charlotte") %>% print()
+# Save the file path to an object so we don't have to type it repeatedly
+# or hard-code it in.
+path <- "city_ses.xlsx"
+# Use readxl::excel_sheets to get the name of each sheet in the workbook.
+# this makes our code more robust.
+sheets <- excel_sheets(path)
+for(i in seq_along(sheets)) {
+  # Convert sheet name to lowercase before using it to name the df
+  new_nm <- tolower(sheets[[i]])
+  assign(new_nm, read_excel(path, sheet = sheets[[i]]))
+}
+library(readxl)
+path <- "C:/Users/Immah/Downloads/city_ses.xlsx"
+sheets <- excel_sheets(path)
+sheets
+for (i in seq_along(sheets)) {
+  new_nm <- tolower(sheets[[i]])
+  assign(new_nm, read_excel(path, sheet = sheets[[i]]))
+}
+houston
+atlanta
+charlotte
+#for loops for data management
+people_1 <- tribble(
+    ~id_1, ~name_first_1, ~name_last_1, ~street_1,
+    1, "Easton",  NA,         "Alameda",
+    2, "Elias",   "Salazar",  "Crissy Field",
+    3, "Colton",  "Fox",      "San Bruno",
+    4, "Cameron", "Warren",   "Nottingham",
+    5, "Carson",  "Mills",    "Jersey",
+    6, "Addison", "Meyer",    "Tingley",
+    7, "Aubrey",  "Rice",     "Buena Vista",
+    8, "Ellie",   "Schmidt",  "Division",
+    9, "Robert",  "Garza",    "Red Rock",
+    10, "Stella", "Daniels", "Holland")
+people_2 <- tribble(
+  ~id_1, ~name_first_1, ~name_last_1, ~street_1,
+  1, "Easton",  NA,         "Alameda",
+  2, "Elias",   "Salazar",  "Crissy Field",
+  3, NA,  "Fox",      NA,
+  4, "Cameron", "Warren",   "Nottingham",
+  5, "Carson",  "Mills",    "Jersey",
+  6, "Addison", NA,    NA,
+  7, "Aubrey",  "Rice",     "Buena Vista",
+  8, NA,   "Schmidt",  "Division",
+  9, "Robert",  "Garza",    "Red Rock",
+  10, "Stella", NA, "Holland")  
+people<-people_1 %>%
+  bind_cols(people_2)%>%
+  print()
+is_match<-function(value_1,value_2){
+  result <-value_1== value_2
+  result <-if_else(is.na(result), FALSE,result)
+  result
+}
+people%>%
+  mutate(
+    name_first_match= is_match(name_first_1,name_first_2),
+    name_last_match = is_match(name_last_1,name_last_2),
+    street_match = is_match(street_1,street_2)
+  ) %>%
+  #Orderlike columnsnextto eachother foreasiercomparison
+  select(id_1, starts_with("name_f"), starts_with("name_l"), starts_with("s"))
+names(people)
+library(dplyr)
+
+people <- people %>%
+  rename(
+    id_1 = `id_1...1`,
+    name_first_1 = `name_first_1...2`,
+    name_last_1 = `name_last_1...3`,
+    street_1 = `street_1...4`,
+    id_2 = `id_1...5`,
+    name_first_2 = `name_first_1...6`,
+    name_last_2 = `name_last_1...7`,
+    street_2 = `street_1...8`
+  )
+cols<-c("name_first","name_last", "street")
+for(i in seq_along(cols)){
+  col_1 <-paste0(cols[[i]],"_1")
+  col_2 <-paste0(cols[[i]],"_2")
+  new_col<-paste0(cols[[i]],"_match")
+  people[[new_col]] <-is_match(people[[col_1]],people[[col_2]])
+}
+people%>%
+  select(id_1, starts_with("name_f"), starts_with("name_l"), starts_with("s"))
+cols<-c("name_first","name_last", "street")
+for(i in seq_along(cols)){
+  col_1 <-paste0(cols[[i]],"_1")
+  col_2 <-paste0(cols[[i]],"_2")
+  new_col<-paste0(cols[[i]],"_match")
+  print(col_1)
+  print(col_2)
+  print(new_col)
+}
+cols <- c("name_first", "name_last", "street")
+for(i in seq_along(cols)) {
+  col_1 <- paste0(cols[[i]], "_1")
+  col_2 <- paste0(cols[[i]], "_2")
+  print(people[[col_1]])
+}
+cols <- c("name_first", "name_last", "street")
+for(i in seq_along(cols)) {
+  col_1 <- paste0(cols[[i]], "_1")
+  col_2 <- paste0(cols[[i]], "_2")
+  print(people[[col_2]])
+}
+cols <- c("name_first", "name_last", "street")
+for(i in seq_along(cols)) {
+  col_1 <- paste0(cols[[i]], "_1")
+  col_2 <- paste0(cols[[i]], "_2")
+  print(is_match(people[[col_1]], people[[col_2]]))
+}
+cols<-c("name_first","name_last", "street")
+for(i in seq_along(cols)){
+  col_1 <-paste0(cols[[i]],"_1")
+  col_2 <-paste0(cols[[i]],"_2")
+  new_col<-paste0(cols[[i]],"_match")
+  people[[new_col]] <-is_match(people[[col_1]],people[[col_2]])
+}
+people%>%
+  select(id_1, starts_with("name_f"), starts_with("name_l"), starts_with("s"))
+#for loops for analysis
+study<-tibble(
+  age =c(32, 30,32,29,24,38,25,24, 48, 29, 22, 29, 24, 28,24,25,
+         25, 22,25,24,25,24,23,24, 31, 24, 29, 24, 22, 23,26,23,
+         24, 25,24,33,27,25,26,26, 26, 26, 26, 27, 24, 43,25,24,
+         27, 28,29,24,26,28,25,24, 26, 24, 26, 31, 24, 26,31,34,
+         26, 25,27,NA),
+  age_group =c(2, 2, 2,1,1, 2, 1, 1,2,1, 1, 1, 1,1,1,1, 1, 1, 1,1,1,
+               1, 1, 1,2,1, 1, 1, 1,1,1, 1, 1, 1,1,2,1, 1, 1, 1,1,1,
+               1, 1, 1,2,1, 1, 1, 1,1,1, 1, 1, 1,1,1,1, 1, 2, 1,1,2,
+               2, 1, 1,1,NA),
+  gender =c(2, 1, 1,2,1, 1, 1, 2,2,2, 1, 1, 2,1,1,1, 1, 2, 2,1,1,
+            1, 1, 2,1,1, 2, 1, 1,1,2, 1, 1, 2,2,1,2, 2, 1, 2,2,1,
+            1, 1, 1,1,1, 1, 1, 2,2,1, 1, 1, 1,2,2,1, 1, 2, 1,2,1,
+            1, 1, 2,1,NA),
+  ht_in =c(70, 63,62,67,67,58,64,69, 65, 68, 63, 68, 69, 66,67,65,
+           64, 75,67,63,60,67,64,73, 62, 69, 67, 62, 68, 66,66,62,
+           64, 68,NA,68,70,68,68,66, 71, 61, 62, 64, 64, 63,67,66,
+           69, 76,NA,63,64,65,65,71, 66, 65, 65, 71, 64, 71,60,62,
+           61, 69,66,NA),
+  wt_lbs =c(216,106, 145, 195,143, 125, 138,140, 158,167,145, 297,146,
+            125,111, 125, 130,182, 170, 121,98,150, 132,250, 137, 124,
+            186,148, 134, 155,122, 142, 110,132, 188,176,188, 166,136,
+            147,178, 125, 102,140, 139, 60,147,147, 141,232, 186, 212,
+            110,110, 115, 154,140, 150, 130,NA,171, 156,92,122, 102,
+            163,141, NA),
+  bmi =c(30.99, 18.78, 26.52, 30.54,22.39,26.12,23.69,20.67,26.29,
+         25.39, 25.68, 45.15, 21.56,20.17,17.38,20.8, 22.31, 22.75,
+         26.62, 21.43, 19.14, 23.49,22.66,32.98,25.05,18.31,29.13,
+         27.07, 20.37, 25.01, 19.69,25.97,18.88,20.07,NA,26.76,
+         26.97, 25.24, 20.68, 23.72,24.82,23.62,18.65,24.03,23.86,
+         10.63, 23.02, 23.72, 20.82,28.24,NA,37.55,18.88,18.3,
+         19.13, 21.48, 22.59, 24.96,21.63,NA,29.35,21.76,17.97,
+         22.31, 19.27, 24.07, 22.76,NA),
+  bmi_3cat =c(3, 1, 2,3,1, 2, 1, 1,2,2, 2, 3, 1,1,1,1, 1, 1, 2,1,1,
+              1, 1, 3,2,1, 2, 2, 1,2,1, 2, 1, 1,NA, 2,2,2, 1, 1, 1,1,
+              1, 1, 1,1,1, 1, 1, 2,NA,3,1,1, 1, 1, 1,1,1, NA,2, 1,
+              1, 1, 1,1,1, NA)) %>%
+  mutate(
+    age_group = factor(age_group, labels = c("Younger than 30", "30 and Older")),
+    gender
+    = factor(gender, labels = c("Female", "Male")),
+    bmi_3cat = factor(bmi_3cat, labels = c("Normal", "Overweight", "Obese"))
+  ) %>%
+  print()
+summary_stats <- study %>%
+  summarise(
+    across(
+      .cols = c(age, ht_in, wt_lbs, bmi),
+      .fns
+      = list(
+        n_miss = ~ sum(is.na(.x)),
+        mean = ~ mean(.x, na.rm = TRUE),
+        median = ~ median(.x, na.rm = TRUE),
+        min = ~ min(.x, na.rm = TRUE),
+        max = ~ max(.x, na.rm = TRUE)
+  ),
+.names = "{col}-{fn}")) %>%
+  print()
+summary_stats %>%
+  tidyr::pivot_longer(
+    cols
+    = everything(),
+    names_to = c("characteristic", ".value"),
+    names_sep = "-"
+  )
+study %>%
+  count(age_group)
