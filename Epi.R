@@ -3022,3 +3022,536 @@ summary_stats %>%
   )
 study %>%
   count(age_group)
+library(dplyr)
+study %>%
+  count(gender)
+study %>%
+  count(bmi_3cat)
+study %>%
+  summarise(
+    across(
+      .cols = c(age_group, gender, bmi_3cat),
+      .fns = count))
+study %>%
+  summarise(
+    across(
+      .cols = c(age, ht_in),
+      .fns = ~ mean(.x, na.rm = TRUE)))
+# Structure 1. An object to contain the results.
+# Create the data frame structure that will contain our results
+cat_table <- tibble(
+  variable = vector("character"),
+  category = vector("character"),
+  n
+  = vector("numeric"))
+# Structure 2. The actual for loop.
+# For each column, get the column name, category names, and count.
+# Then, add them to the bottom of the results data frame we created above.
+for(i in c("age_group", "gender", "bmi_3cat")) {
+  cat_stats <- study %>%
+    count(.data[[i]]) %>% # Use .data to refer to the current data frame.
+    mutate(variable = names(.)[1]) %>% # Use . to refer to the result to this point.
+    rename(category = 1)
+  # Here is where we update cat_table with the results for each column
+  cat_table <- bind_rows(cat_table, cat_stats)
+}
+cat_table
+cat_table <- tibble(
+  variable = vector("character"),
+  category = vector("character"),
+  n
+  = vector("numeric"))
+str(cat_table)
+for(i in c("age_group", "gender", "bmi_3cat")) {
+  cat_stats <- study %>%
+    count(.data[[i]]) %>%
+    mutate(variable = names(.)[1]) %>%
+    rename(category = 1)
+  cat_table <- bind_rows(cat_table, cat_stats)
+}
+cat_stats <- study %>%
+  count(.data[[i]]) %>%
+  mutate(variable = names(.)[1]) %>%
+  rename(category = 1)
+cat_stats <- study %>%
+  count(age_group) %>%
+  mutate(variable = names(.)[1]) %>%
+  rename(category = 1) %>%
+  print()
+cat_stats <- study %>%
+  count(age_group) %>%
+  print()
+study %>%
+  count(age_group) %>%
+  tidyr::pivot_longer(
+    cols
+    = "age_group",
+    names_to = "variable",
+    values_to = "category")
+names(cat_stats)
+names(cat_stats)[1]
+names(.)[1]
+study %>%
+  count(age_group)
+names(study %>% count(age_group))
+study %>% count(age_group) %>% names(.)
+cat_stats <- study %>%
+  count(age_group) %>%
+  mutate(variable = names(.)[1]) %>%
+  print()
+study %>%
+  count(age_group) %>%
+  bind_rows(study %>% count(gender))
+cat_stats <- study %>%
+  count(age_group) %>%
+  mutate(variable = names(.)[1]) %>%
+  rename(category = age_group) %>%
+  print()
+cat_stats <- study %>%
+  count(age_group) %>%
+  mutate(variable = names(.)[1]) %>%
+  rename(category = 1) %>% # Replace age_group with 1
+  print()
+cat_stats <- study %>%
+  count(gender) %>% # Changed the column from age_group to gender
+  mutate(variable = names(.)[1]) %>%
+  rename(category = 1) %>% # Still have 1 here
+  print()
+cat_table <- tibble(
+  variable = vector("character"),
+  category = vector("character"),
+  n
+  = vector("numeric")
+) %>%
+  print()
+cat_stats <- study %>%
+  count(age_group) %>%
+  mutate(variable = names(.)[1]) %>%
+  rename(category = 1) %>%
+  print()
+cat_table <- cat_table %>%
+  bind_rows(cat_stats) %>%
+  print()
+cat_stats <- study %>%
+  count(gender) %>% # Change to gender
+  mutate(variable = names(.)[1]) %>%
+  rename(category = 1)
+cat_table <- cat_table %>%
+  bind_rows(cat_stats) %>%
+  print()
+cat_stats <- study %>%
+  count(bmi_3cat) %>% # Change to bmi_3cat
+  mutate(variable = names(.)[1]) %>%
+  rename(category = 1)
+cat_table <- cat_table %>%
+  bind_rows(cat_stats) %>%
+  print()
+for(i in c(age_group, gender, bmi_3cat)) {
+  study %>%
+    count(i) %>%
+    mutate(variable = names(.)[1]) %>%
+    rename(category = 1)
+}
+for(i in c("age_group", "gender", "bmi_3cat")) {
+  study %>%
+    count(i) %>%
+    mutate(variable = names(.)[1]) %>%
+    rename(category = 1)
+}
+for(i in c("age_group", "gender", "bmi_3cat")) {
+  study %>%
+    count(.data[[i]]) %>%
+    mutate(variable = names(.)[1]) %>%
+    rename(category = 1) %>%
+    print()
+}
+study %>%
+  count(age_group)
+table(age_group)
+table(study[["age_group"]])
+for(i in c("age_group", "gender", "bmi_3cat")) {
+  study %>%
+    count(i)
+}
+study %>%
+  count(study[["age_group"]])
+study %>%
+  count(.data[["age_group"]])
+# Create the data frame structure that will contain our results
+cat_table <- tibble(
+  variable = vector("character"),
+  category = vector("character"),
+  n
+  = vector("numeric")
+)
+# For each column, get the column name, category names, and count.
+# Then, add them to the bottom of the results data frame we created above.
+for(i in c("age_group", "gender", "bmi_3cat")) {
+  cat_stats <- study %>%
+    count(.data[[i]]) %>% # Use .data to refer to the current data frame.
+    mutate(variable = names(.)[1]) %>% # Use . to refer to the current data frame.
+    rename(category = 1)
+  # Here is where we update cat_table with the results for each column
+  cat_table <- bind_rows(cat_table, cat_stats)
+}
+cat_table
+cat_table%>%
+  group_by(variable)%>%
+  mutate(
+    percent= n /sum(n)* 100)
+cat_stats<-function(data,...){
+  #Create the data framestructurethatwillcontainourresults
+  cat_table <-tibble(
+    variable= vector("character"),
+    category= vector("character"),
+    n = vector("numeric")
+  )
+  #Foreachcolumn in...,getthecolumnname,categorynames,andcount.
+  # Then, add them to the bottom of the results data frame we created above.
+  for(i in c(...)) {
+    stats <- data %>%
+      count(.data[[i]]) %>% # Use .data to refer to the current data frame.
+      mutate(variable = names(.)[1]) %>% # Use . to refer to the current data frame.
+      rename(category = 1)
+    # Here is where we update cat_table with the results for each column
+    cat_table <- bind_rows(cat_table, stats)
+  }
+  # Return results
+  cat_table
+}
+cat_stats(study, "age_group", "gender", "bmi_3cat")
+
+
+#USING THE PURR PACKAGE
+library(purrr)
+set.seed(123)
+df_xyz <- tibble(
+  x = rnorm(10),
+  y = rnorm(10),
+  z = rnorm(10)
+) %>%
+  print()
+library(dplyr)
+df_xyz %>%
+  summarise(
+    across(
+      .cols = everything(),
+      .fns
+      = mean,
+      .names = "{col}_mean"))
+xyz_means <- vector("double", ncol(df_xyz))
+for(i in seq_along(df_xyz)) {
+  xyz_means[[i]] <- mean(df_xyz[[i]])
+}
+xyz_means
+xyz_means <- map_dbl(
+  .x = df_xyz,
+  .f = mean)
+xyz_means
+names <- c("Avril", "Joe", "Whitney")
+n_letters <- vector("double", length(names)) # Expecting double
+for(i in seq_along(names)) {
+  n_letters[[i]] <- stringr::str_extract(names[[i]], "\\w") # Returns character
+}
+n_letters
+names <- c("Avril", "Joe", "Whitney")
+n_letters <- map_dbl(
+  .x = names,
+  .f = stringr::str_extract, "\\w{1}")
+#using purrr for data transfer
+library(readxl)
+houston <-import_cities("Houston")
+atlanta <-import_cities("Atlanta")
+charlotte<-import_cities("Charlotte")
+readxl::read_excel("C:/Users/Immah/Downloads/city_ses.xlsx")
+getwd()
+find("import_cities")
+import_cities
+import_cities <- function(sheet) {
+  readxl::read_excel(
+    "C:/Users/Immah/Downloads/city_ses.xlsx",
+    sheet = sheet
+  )
+}
+houston <-import_cities("Houston")
+atlanta <-import_cities("Atlanta")
+charlotte<-import_cities("Charlotte")
+path<-"city_ses.xlsx"
+sheets<-excel_sheets(path)
+for(i in seq_along(sheets)){
+  new_nm <-tolower(sheets[[i]])
+  assign(new_nm,read_excel(path, sheet= sheets[[i]]))
+}
+path<-"city_ses.xlsx"
+walk(
+  .x =excel_sheets(path),
+  .f =function(x){
+    new_nm <-tolower(x)
+    assign(new_nm, read_excel(path, sheet=x), envir= .GlobalEnv)
+  })
+houston
+atlanta
+charlotte
+list_of_df <- map(
+  .x = excel_sheets(path),
+  .f = ~ read_excel(path, sheet = .x))
+str(list_of_df)
+houston<-list_of_df[[1]]
+houston
+atlanta<-list_of_df[[2]]
+atlanta
+charlotte<-list_of_df[[2]]
+charlotte
+bind_rows(list_of_df)
+cities<-map_dfr(
+  .x =excel_sheets(path),
+  .f =~ read_excel(path, sheet= .x))
+cities
+returned_by_walk <- walk(
+  .x = excel_sheets(path),
+  .f = function(x) {
+    new_nm <- tolower(x)
+    assign(new_nm, read_excel(path, sheet = x), envir = .GlobalEnv)
+  })
+returned_by_walk
+path<-"city_ses.xlsx"
+walk(
+  .x =excel_sheets(path),
+  .f =~ assign(tolower(.),read_excel(path, sheet= .),envir=.GlobalEnv))
+houston
+atlanta
+charlotte
+#using purrr for data management
+set.seed(123)
+df_xyz <- tibble(
+  x = rnorm(10),
+  y = rnorm(10),
+  z = rnorm(10)
+) %>%
+  print()
+df_xyz$x[2] <- NA_real_
+df_xyz$y[4] <- NA_real_
+df_xyz$z[6] <- NA_real_
+df_xyz
+add_na_at <- function(vect, pos) {
+  vect[[pos]] <- NA
+}
+add_na_at(df_xyz$x, 2) %>% print()
+add_na_at <- function(vect, pos) {
+  vect[[pos]] <- NA
+  vect
+}
+add_na_at(df_xyz$x, 2)
+df_xyz %>%
+  mutate(
+    x = add_na_at(x, 2),
+    y = add_na_at(y, 4),
+    z = add_na_at(z, 6))
+add_na_at(df_xyz$x)
+map(
+  .x = df_xyz,
+  .f = add_na_at, 2)
+map(
+  .x =df_xyz,
+  .f =~ add_na_at(.x, 2))
+map(
+  .x =df_xyz,
+  .f =~ add_na_at(.x, 2)
+)%>%
+  as.data.frame()
+map_dfc(
+  .x = df_xyz,
+  .f = ~ add_na_at(.x, 2))
+map2_dfc(
+  .x = df_xyz,
+  .y = c(2, 4, 6),
+  .f = ~ add_na_at(.x, .y))
+set.seed(8142020)
+map2_dfc(
+  .x = df_xyz,
+  .y = sample(1:10, 3, TRUE),
+  .f = ~ add_na_at(.x, .y))
+add_na_at<-function(vect,pos){
+  vect[[pos]]<-NA
+  vect
+}
+map2_dfc(
+  .x =df_xyz,
+  .y =c(2, 4, 6),
+  .f =function(vect,pos){
+    vect[[pos]]<-NA
+    vect
+  })
+map2_dfc(
+  .x = df_xyz,
+  .y = c(2, 4, 6),
+  .f = ~ {
+    .x[[.y]] <- NA
+    .x
+  })
+is_match<-function(value_1,value_2){
+  result <-value_1== value_2
+  result <-if_else(is.na(result), FALSE,result)
+  result
+}
+people%>%
+  mutate(
+    name_first_match= is_match(name_first_1,name_first_2),
+    name_last_match = is_match(name_last_1,name_last_2),
+    street_match = is_match(street_1,street_2)
+  ) %>%
+  #Orderlike columnsnextto eachother foreasiercomparison
+  select(id_1, starts_with("name_f"), starts_with("name_l"), starts_with("s"))
+map_dfc(
+  .x =c("name_first", "name_last","street"),
+  .f =function(col,data= people){
+    col_1<-paste0(col,"_1")
+    col_2<-paste0(col,"_2")
+    new_nm <-paste0(col, "_match")
+    data[[new_nm]]<-data[[col_1]]== data[[col_2]]
+    data[[new_nm]]<-if_else(is.na(data[[new_nm]]), FALSE,data[[new_nm]])
+    data[c(col_1,col_2,new_nm)]
+  })
+#using purrr for analysis
+study<-tibble(
+  age =c(32, 30,32,29,24,38,25,24, 48, 29, 22, 29, 24, 28,24,25,
+         25, 22,25,24,25,24,23,24, 31, 24, 29, 24, 22, 23,26,23,
+         24, 25,24,33,27,25,26,26, 26, 26, 26, 27, 24, 43,25,24,
+         27, 28,29,24,26,28,25,24, 26, 24, 26, 31, 24, 26,31,34,
+         26, 25,27,NA),
+  age_group =c(2, 2, 2,1,1, 2, 1, 1,2,1, 1, 1, 1,1,1,1, 1, 1, 1,1,1,
+               1, 1, 1,2,1, 1, 1, 1,1,1, 1, 1, 1,1,2,1, 1, 1, 1,1,1,
+               1, 1, 1,2,1, 1, 1, 1,1,1, 1, 1, 1,1,1,1, 1, 2, 1,1,2,
+               2, 1, 1,1,NA),
+  gender =c(2, 1, 1,2,1, 1, 1, 2,2,2, 1, 1, 2,1,1,1, 1, 2, 2,1,1,
+            1, 1, 2,1,1, 2, 1, 1,1,2, 1, 1, 2,2,1,2, 2, 1, 2,2,1,
+            1, 1, 1,1,1, 1, 1, 2,2,1, 1, 1, 1,2,2,1, 1, 2, 1,2,1,
+            1, 1, 2,1,NA),
+  ht_in =c(70, 63,62,67,67,58,64,69, 65, 68, 63, 68, 69, 66,67,65,
+           64, 75,67,63,60,67,64,73, 62, 69, 67, 62, 68, 66,66,62,
+           64, 68,NA,68,70,68,68,66, 71, 61, 62, 64, 64, 63,67,66,
+           69, 76,NA,63,64,65,65,71, 66, 65, 65, 71, 64, 71,60,62,
+           61, 69,66,NA),
+  wt_lbs =c(216,106, 145, 195,143, 125, 138,140, 158,167,145, 297,146,
+            125,111, 125, 130,182, 170, 121,98,150, 132,250, 137, 124,
+            186,148, 134, 155,122, 142, 110,132, 188,176,188, 166,136,
+            147,178, 125, 102,140, 139, 60,147,147, 141,232, 186, 212,
+            110,110, 115, 154,140, 150, 130,NA,171, 156,92,122, 102,
+            163,141, NA),
+  bmi =c(30.99, 18.78, 26.52, 30.54,22.39,26.12,23.69,20.67,26.29,
+         25.39, 25.68, 45.15, 21.56,20.17,17.38,20.8, 22.31, 22.75,
+         26.62, 21.43, 19.14, 23.49,22.66,32.98,25.05,18.31,29.13,
+         27.07, 20.37, 25.01, 19.69,25.97,18.88,20.07,NA,26.76,
+         26.97, 25.24, 20.68, 23.72,24.82,23.62,18.65,24.03,23.86,
+         10.63, 23.02, 23.72, 20.82,28.24,NA,37.55,18.88,18.3,
+         19.13, 21.48, 22.59, 24.96, 21.63, NA, 29.35, 21.76, 17.97,
+         22.31, 19.27, 24.07, 22.76, NA),
+  bmi_3cat = c(3, 1, 2, 3, 1, 2, 1, 1, 2, 2, 2, 3, 1, 1, 1, 1, 1, 1, 2, 1, 1,
+               1, 1, 3, 2, 1, 2, 2, 1, 2, 1, 2, 1, 1, NA, 2, 2, 2, 1, 1, 1, 1,
+               1, 1, 1, 1, 1, 1, 1, 2, NA, 3, 1, 1, 1, 1, 1, 1, 1, NA, 2, 1,
+               1, 1, 1, 1, 1, NA)
+) %>%
+  mutate(
+    age_group = factor(age_group, labels = c("Younger than 30", "30 and Older")),
+    gender
+    = factor(gender, labels = c("Female", "Male")),
+    bmi_3cat = factor(bmi_3cat, labels = c("Normal", "Overweight", "Obese"))
+  ) %>%
+  print()
+continuous_stats <- function(var) {
+  study %>%
+    summarise(
+      n_miss = sum(is.na({{ var }})),
+      mean = mean({{ var }}, na.rm = TRUE),
+      median = median({{ var }}, na.rm = TRUE),
+      min = min({{ var }}, na.rm = TRUE),
+      max = max({{ var }}, na.rm = TRUE)
+    )
+  }
+continuous_stats(age)
+continuous_stats(ht_in)
+continuous_stats(wt_lbs)
+continuous_stats(bmi)
+map_dfr(
+  .x =quos(age,ht_in,wt_lbs,bmi),
+  .f =continuous_stats)
+continuous_stats<-function(var){
+  study %>%
+    summarise(
+      variable =quo_name(var), #Addvariablenametotheoutput
+      n_miss =sum(is.na({{var}})),
+      mean =mean({{var}},na.rm= TRUE),
+      median =median({{var}}, na.rm=TRUE),
+      min =min({{var}},na.rm=TRUE),
+      max =max({{var}},na.rm=TRUE))
+}
+map_dfr(
+  .x = quos(age, ht_in, wt_lbs, bmi),
+  .f = continuous_stats)
+continuous_stats <- function(data, var) {
+  data %>% # Don't forget to replace "study" with "data" here too!
+    summarise(
+      variable = quo_name(var),
+      n_miss = sum(is.na({{ var}} )),
+      mean
+      = mean({{ var }}, na.rm = TRUE),
+      median = median({{ var }}, na.rm = TRUE),
+      min = min({{ var }}, na.rm = TRUE),
+ max = max({{ var }}, na.rm = TRUE))
+}
+map_dfr(
+  .x = quos(age, ht_in, wt_lbs, bmi),
+  .f = continuous_stats, data = study)
+map_dfr(
+  .x = quos(x, y, z),
+  .f = continuous_stats, data = df_xyz)
+#categorical statistics
+# Structure 1. An object to contain the results.
+# Create the data frame structure that will contain our results
+cat_table <- tibble(
+  variable = vector("character"),
+  category = vector("character"),
+  n = vector("numeric")
+)
+# Structure 2. The actual for loop.
+# For each column, get the column name, category names, and count.
+# Then, add them to the bottom of the results data frame we created above.
+for(i in c("age_group", "gender", "bmi_3cat")) {
+  cat_stats <- study %>%
+    count(.data[[i]]) %>% # Use .data to refer to the current data frame.
+    mutate(variable = names(.)[1]) %>% # Use . to refer to the current data frame.
+    rename(category = 1)
+  # Here is where we update cat_table with the results for each column
+  cat_table <- bind_rows(cat_table, cat_stats)
+}
+cat_table
+map_dfr(
+  .x = c("age_group", "gender", "bmi_3cat"),
+  .f = function(x) {
+    study %>%
+      count(.data[[x]]) %>%
+      mutate(variable = names(.)[1]) %>%
+      rename(category = 1) %>%
+      select(variable,category,n)
+  }
+)
+map_dfr(
+  .x =quos(age_group,gender, bmi_3cat), #Changec()toquos()
+  .f =function(x){
+    study%>%
+      count({{x}}) %>%#Change.data[[x]]to{{x}}
+      mutate(variable=names(.)[1]) %>%
+      rename(category=1) %>%
+      select(variable,category,n)
+  }
+)
+map_dfr(
+  .x =quos(age_group,gender, bmi_3cat),
+  .f =function(x,data= study){
+    data%>%# Don't forgettoreplace"study"with"data"heretoo!
+      count({{x}}) %>%
+      mutate(variable=names(.)[1]) %>%
+      rename(category=1) %>%
+      select(variable,category,n)
+  }
+)
